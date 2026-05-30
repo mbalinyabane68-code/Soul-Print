@@ -1,0 +1,15 @@
+{
+  "name": "Bookmark",
+  "type": "object",
+  "properties": {
+    "chapter_id": {
+      "type": "string"
+    },
+    "user_email": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "chapter_id"
+  ]
+}

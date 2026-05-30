@@ -1,0 +1,41 @@
+{
+  "name": "Chapter",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "chapter_number": {
+      "type": "number"
+    },
+    "content": {
+      "type": "string"
+    },
+    "teaser": {
+      "type": "string"
+    },
+    "preview_text": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "teaser",
+        "published"
+      ]
+    },
+    "cover_image": {
+      "type": "string"
+    },
+    "published_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "title",
+    "chapter_number",
+    "status"
+  ]
+}
