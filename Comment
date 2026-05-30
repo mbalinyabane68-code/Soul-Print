@@ -1,0 +1,21 @@
+{
+  "name": "Character",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "bio": {
+      "type": "string"
+    },
+    "image": {
+      "type": "string"
+    },
+    "role_in_story": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "PollVote",
+  "type": "object",
+  "properties": {
+    "poll_id": {
+      "type": "string"
+    },
+    "option_index": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "poll_id",
+    "option_index"
+  ]
+}

@@ -1,0 +1,92 @@
+const db = globalThis.__B44_DB__ || { auth:{ isAuthenticated: async()=>false, me: async()=>null }, entities:new Proxy({}, { get:()=>({ filter:async()=>[], get:async()=>null, create:async()=>({}), update:async()=>({}), delete:async()=>({}) }) }), integrations:{ Core:{ UploadFile:async()=>({ file_url:'' }) } } };
+
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+
+import { Link } from "react-router-dom";
+import { Bell, BookOpen, Trash2, Check } from "lucide-react";
+
+import moment from "moment";
+
+export default function Notifications() {
+  const queryClient = useQueryClient();
+
+  const { data: notifications = [], isLoading } = useQuery({
+    queryKey: ["notifications"],
+    queryFn: () => db.entities.Notification.list("-created_date", 50),
+  });
+
+  const markRead = useMutation({
+    mutationFn: (id) => db.entities.Notification.update(id, { is_read: true }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["notifications"] }),
+  });
+
+  const deleteNotif = useMutation({
+    mutationFn: (id) => db.entities.Notification.delete(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["notifications"] }),
+  });
+
+  return (
+    <div>
+      <div className="px-4 pt-3 pb-1">
+        <h2 className="font-heading font-semibold">Notifications</h2>
+      </div>
+      <div className="p-4">
+        {isLoading ? (
+          <div className="text-center py-8">
+            <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
+          </div>
+        ) : notifications.length === 0 ? (
+          <div className="text-center py-12">
+            <Bell className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
+            <p className="font-medium text-muted-foreground">All caught up!</p>
+            <p className="text-sm text-muted-foreground mt-1">
+              You'll be notified when new chapters drop
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {notifications.map((n) => (
+              <div
+                key={n.id}
+                className={`bg-card border rounded-xl p-4 transition-all ${n.is_read ? 'border-border opacity-60' : 'border-primary/30'}`}
+              >
+                <div className="flex items-start gap-3">
+                  <Link to={n.chapter_id ? `/chapter/${n.chapter_id}` : "#"} className="flex items-start gap-3 flex-1 min-w-0">
+                    <div className={`rounded-full p-2 mt-0.5 ${n.is_read ? 'bg-muted' : 'bg-primary/10'}`}>
+                      <BookOpen className={`h-4 w-4 ${n.is_read ? 'text-muted-foreground' : 'text-primary'}`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm">{n.title}</p>
+                      {n.message && (
+                        <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{n.message}</p>
+                      )}
+                      <p className="text-xs text-muted-foreground mt-1.5">{moment(n.created_date).fromNow()}</p>
+                    </div>
+                  </Link>
+                  <div className="flex flex-col gap-1 ml-1">
+                    {!n.is_read && (
+                      <button
+                        onClick={() => markRead.mutate(n.id)}
+                        className="p-1.5 rounded-lg hover:bg-green-50 text-green-600 transition-colors"
+                        title="Mark as read"
+                      >
+                        <Check className="h-4 w-4" />
+                      </button>
+                    )}
+                    <button
+                      onClick={() => deleteNotif.mutate(n.id)}
+                      className="p-1.5 rounded-lg hover:bg-red-50 text-destructive transition-colors"
+                      title="Delete"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

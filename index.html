@@ -1,0 +1,52 @@
+const db = globalThis.__B44_DB__ || { auth:{ isAuthenticated: async()=>false, me: async()=>null }, entities:new Proxy({}, { get:()=>({ filter:async()=>[], get:async()=>null, create:async()=>({}), update:async()=>({}), delete:async()=>({}) }) }), integrations:{ Core:{ UploadFile:async()=>({ file_url:'' }) } } };
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <script>
+      (function() {
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+          document.documentElement.classList.toggle('dark', e.matches);
+        });
+      })();
+    </script>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="https://db.com/logo_v2.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="manifest" href="/manifest.json" />
+    <title>Base44 APP</title>
+    <style>
+      #base44-badge, [id*="base44-badge"], [class*="base44-badge"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      (function() {
+        function removeBadge() {
+          var badge = document.getElementById('base44-badge');
+          if (badge) badge.remove();
+          document.querySelectorAll('[id*="base44"], [class*="base44-badge"]').forEach(function(el) {
+            if (el.id !== 'root') el.remove();
+          });
+        }
+        removeBadge();
+        var observer = new MutationObserver(removeBadge);
+        observer.observe(document.body || document.documentElement, { childList: true, subtree: true });
+        document.addEventListener('DOMContentLoaded', function() {
+          removeBadge();
+          observer.observe(document.body, { childList: true, subtree: true });
+        });
+      })();
+    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

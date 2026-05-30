@@ -1,0 +1,26 @@
+{
+  "name": "Comment",
+  "type": "object",
+  "properties": {
+    "chapter_id": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string"
+    },
+    "user_name": {
+      "type": "string"
+    },
+    "user_email": {
+      "type": "string"
+    },
+    "is_writer": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "chapter_id",
+    "content"
+  ]
+}
